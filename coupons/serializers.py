@@ -1,0 +1,17 @@
+from rest_framework import serializers
+
+from .models import Coupon
+
+
+class CouponListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = ('name', 'end_date', 'coupon_type',
+                  'discount_percentage', 'discount_amount')
+
+
+class CreateCouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = ('name', 'end_date', 'coupon_type',
+                  'discount_percentage', 'discount_amount')

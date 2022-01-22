@@ -150,7 +150,7 @@ const CreateCoupon = () => {
             if ((formData.name && formData.minimumCartAmount > 0 && formData.endDate && formData.couponType) &&
                 ((formData.discountPercentage && formData.maximumPercentageDiscountAmount) || formData.discountAmount)) {
 
-                if (formData.discountAmount > 0 || (formData.maximumPercentageDiscountAmount > 0 && formData.discountPercentage > 0)) {
+                if (formData.discountAmount > 0 || (formData.maximumPercentageDiscountAmount > 0 && (formData.discountPercentage > 0 && formData.discountPercentage < 101))) {
                     axiosInstance
                         .post(`create-coupon/`, {
                             name: formData.name,

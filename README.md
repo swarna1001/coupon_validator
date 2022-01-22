@@ -1,22 +1,22 @@
-# Getting Started with Create React App
+## Coupon Validator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Python - 3.8.5
+3. Node.js - 14.17.3
+4. npm - 6.14.13
+5. PostgreSQL - 12.9
 
-## Available Scripts
+### Local Repository Setup (For Windows)
 
-In the project directory, you can run:
+1. Install the above mentioned softwares.
+2. Install virtualenv python package using `pip install virtualenv`.
+3. Create a virtual env `virtualenv (your virtual environment name)`.
+4. Clone/Fork the repository.
+5. Install python packages from the requirements.txt file using `pip install -r requirements.txt`.
+6. Create a database server in PostgreSQL.
+7. Edit database variables in .env file.
+8. Install NPM packages from package.json using `npm install`.
+9. Run the command `npm run build`.
+10. Make database migrations using `python manage.py makemigrations` and `python manage.py migrate`.
+11. Start the project using `python manage.py runserver`.
+12. The project will run at your localhost.
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`

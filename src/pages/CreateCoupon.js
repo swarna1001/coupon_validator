@@ -19,6 +19,7 @@ const CreateCoupon = () => {
     const [showmaximumPercentageDiscountAmountErrorMsg, setShowmaximumPercentageDiscountAmountErrorMsg] = useState(false);
 
     const [showNegativeZeroErrorMsg, setShowNegativeZeroErrorMsg] = useState(false);
+    const [couponTypeNotSelectedErrorMsg, setCouponTypeNotSelectedErrorMsg] = useState(false);
 
     const [showDiscountAmountErrorMsg, setShowDiscountAmountErrorMsg] = useState(false);
     const [showDiscountAmountBox, setShowDiscountAmountBox] = useState(false);
@@ -45,6 +46,7 @@ const CreateCoupon = () => {
         setShowDiscountAmountErrorMsg(false);
         setEmptyMessage(false);
         setShowCouponAlreadyExistsError("");
+        setCouponTypeNotSelectedErrorMsg(false);
 
         updateFormData({
             ...formData,
@@ -89,6 +91,7 @@ const CreateCoupon = () => {
         setShowDiscountAmountErrorMsg(false);
         setShowmaximumPercentageDiscountAmountErrorMsg(false);
         setShowNegativeZeroErrorMsg(false);
+        setCouponTypeNotSelectedErrorMsg(false);
 
         updateFormData({
             ...formData,
@@ -96,7 +99,7 @@ const CreateCoupon = () => {
         });
     }
 
-    //console.log(formData);
+    console.log(formData);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -106,6 +109,7 @@ const CreateCoupon = () => {
         setShowCouponAlreadyExistsError("");
         setShowSuccessMessage(false);
         setShowmaximumPercentageDiscountAmountErrorMsg(false);
+        setCouponTypeNotSelectedErrorMsg(false);
 
         if (typeof formData === 'undefined' || typeof formData.name === 'undefined' || typeof formData.minimumCartAmount === 'undefined'
             || typeof formData.endDate === 'undefined' || typeof formData.couponType === 'undefined') {
@@ -145,9 +149,14 @@ const CreateCoupon = () => {
                 setEmptyMessage(true);
             }
 
+            if (formData.couponType == "") {
+                setCouponTypeNotSelectedErrorMsg(true);
+            }
 
 
-            if ((formData.name && formData.minimumCartAmount > 0 && formData.endDate && formData.couponType) &&
+
+            if ((formData.name && formData.minimumCartAmount > 0 && formData.endDate) &&
+                (formData.couponType == 1 || formData.couponType == 2) &&
                 ((formData.discountPercentage && formData.maximumPercentageDiscountAmount) || formData.discountAmount)) {
 
                 if (formData.discountAmount > 0 || (formData.maximumPercentageDiscountAmount > 0 && (formData.discountPercentage > 0 && formData.discountPercentage < 101))) {
@@ -208,8 +217,8 @@ const CreateCoupon = () => {
                                 />
                             </Form.Group>
 
-                            <div>
-                                <span className="mt-2 text-center form-validation-message">
+                            <div className="mt-3">
+                                <span className="text-center form-validation-message">
                                     {showCouponAlreadyExistsError} </span>
                             </div>
 
@@ -223,11 +232,10 @@ const CreateCoupon = () => {
                             </Form.Group>
 
                             {showNegativeZeroErrorMsg ?
-                                <div>
-                                    <span className="text-center form-validation-message mt-3">
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
                                         Amount cannot be 0 or negative! </span>
                                 </div>
-
                                 : <div> </div>}
 
 
@@ -238,7 +246,7 @@ const CreateCoupon = () => {
                             </Form.Group>
 
 
-                            <Form.Label>Coupon type</Form.Label>
+                            <Form.Label className="mt-3">Coupon type</Form.Label>
                             <Form.Select
                                 name="couponType"
                                 aria-label="Default select example"
@@ -257,6 +265,14 @@ const CreateCoupon = () => {
 
                             </Form.Select>
 
+                            {couponTypeNotSelectedErrorMsg ?
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
+                                        Select a valid coupon type!</span>
+
+                                </div>
+                                : <div> </div>}
+
                             {showDiscountPercentageBox ?
                                 <div>
                                     <Form.Group className="mt-3" controlId="discountPercentage">
@@ -272,8 +288,8 @@ const CreateCoupon = () => {
                                 : <div> </div>}
 
                             {showPercentageErrorMsg ?
-                                <div>
-                                    <span className="text-center form-validation-message mt-3">
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
                                         Make sure the value is between 1 and 100! </span>
 
                                 </div>
@@ -296,9 +312,8 @@ const CreateCoupon = () => {
                                 : <div> </div>}
 
                             {showmaximumPercentageDiscountAmountErrorMsg ?
-                                <div>
-
-                                    <span className="text-center form-validation-message mt-3">
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
                                         Discount Amount cannot be negative or zero!</span>
                                 </div>
 
@@ -308,7 +323,6 @@ const CreateCoupon = () => {
                             {showDiscountAmountBox ?
 
                                 <div>
-
                                     <Form.Group className="mt-3" controlId="discountAmount">
                                         <Form.Label>Discount Amount</Form.Label>
                                         <Form.Control
@@ -324,8 +338,8 @@ const CreateCoupon = () => {
 
 
                             {showDiscountAmountErrorMsg ?
-                                <div>
-                                    <span className="text-center form-validation-message mt-3">
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
                                         Discount Amount cannot be negative or zero!</span>
                                 </div>
 
@@ -333,8 +347,8 @@ const CreateCoupon = () => {
 
 
                             {emptyMessage ?
-                                <div>
-                                    <span className="text-center form-validation-message mt-3">
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
                                         Please fill out the fields!</span>
 
                                 </div>
@@ -343,19 +357,18 @@ const CreateCoupon = () => {
 
 
                             {showSuccessMessage ?
-                                <div>
-                                    <span className="text-center form-validation-message mt-3">
+                                <div className="mt-3">
+                                    <span className="text-center form-validation-message">
                                         New coupon successfully created!</span>
-
                                 </div>
 
                                 : <div> </div>}
 
 
                             {error &&
-                                <div className="d-flex justify-content-center">
+                                <div className="d-flex justify-content-center mt-4">
                                     <div>
-                                        <h6><b> Something went wrong. Try Reloading! </b></h6>
+                                        <h6><b> Something went wrong. Please try again! </b></h6>
                                     </div>
                                 </div>
                             }

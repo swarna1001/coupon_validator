@@ -54,14 +54,23 @@ class CalculateDiscount(APIView):
         if (current_date > coupon_end_date):
             return Response({
                 "valid": False,
-                "amount_to_be_deducted": 0,
             })
 
         else:
 
             if coupon_type == 1:
                 discount_amount = coupon.get_discount_amount()
-                return discount_amount
+                if(amount >= discount_amount):
+                    return Response(
+                        {
+                            "valid": True,
+                            "amount_to_be_deducted": discount_amount,
+                        }
+                    )
+                else:
+                    return Response({
+                        "valid": False,
+                    })
 
             elif coupon_type == 2:
                 discount_percentage = coupon.get_discount_percentage()

@@ -18,6 +18,8 @@ const CreateCoupon = () => {
     const [showPercentageErrorMsg, setShowPercentageErrorMsg] = useState(false);
     const [showmaximumPercentageDiscountAmountErrorMsg, setShowmaximumPercentageDiscountAmountErrorMsg] = useState(false);
 
+    const [showNegativeZeroErrorMsg, setShowNegativeZeroErrorMsg] = useState(false);
+
     const [showDiscountAmountErrorMsg, setShowDiscountAmountErrorMsg] = useState(false);
     const [showDiscountAmountBox, setShowDiscountAmountBox] = useState(false);
     const [showDiscountPercentageBox, setShowDiscountPercentageBox] = useState(false);
@@ -32,7 +34,8 @@ const CreateCoupon = () => {
         couponType: "",
         discountPercentage: "",
         discountAmount: "",
-        maximumPercentageDiscountAmount: ""
+        maximumPercentageDiscountAmount: "",
+        minimumCartAmount: ""
     });
 
 
@@ -85,6 +88,7 @@ const CreateCoupon = () => {
         setShowSuccessMessage(false);
         setShowDiscountAmountErrorMsg(false);
         setShowmaximumPercentageDiscountAmountErrorMsg(false);
+        setShowNegativeZeroErrorMsg(false);
 
         updateFormData({
             ...formData,
@@ -103,7 +107,7 @@ const CreateCoupon = () => {
         setShowSuccessMessage(false);
         setShowmaximumPercentageDiscountAmountErrorMsg(false);
 
-        if (typeof formData === 'undefined' || typeof formData.name === 'undefined'
+        if (typeof formData === 'undefined' || typeof formData.name === 'undefined' || typeof formData.minimumCartAmount === 'undefined'
             || typeof formData.endDate === 'undefined' || typeof formData.couponType === 'undefined') {
             setEmptyMessage(true)
         }
@@ -111,35 +115,39 @@ const CreateCoupon = () => {
         else {
 
             if (formData.discountPercentage > 0 && formData.discountPercentage < 101) {
-                setShowPercentageErrorMsg(false)
+                setShowPercentageErrorMsg(false);
             }
             else {
                 // eslint-disable-next-line
                 if (formData.couponType == 2) {
-                    setShowPercentageErrorMsg(true)
+                    setShowPercentageErrorMsg(true);
                 }
+            }
+
+            if (formData.minimumCartAmount <= 0) {
+                setShowNegativeZeroErrorMsg(true);
             }
 
             // eslint-disable-next-line
             if (formData.discountAmount <= 0 && formData.couponType == 1) {
-                setShowDiscountAmountErrorMsg(true)
+                setShowDiscountAmountErrorMsg(true);
             }
 
             if (formData.maximumPercentageDiscountAmount <= 0 && formData.couponType == 2) {
-                setShowmaximumPercentageDiscountAmountErrorMsg(true)
+                setShowmaximumPercentageDiscountAmountErrorMsg(true);
             }
 
             if (typeof formData.discountAmount === 'undefined') {
-                setEmptyMessage(true)
+                setEmptyMessage(true);
             }
 
             if (typeof formData.maximumPercentageDiscountAmount === 'undefined') {
-                setEmptyMessage(true)
+                setEmptyMessage(true);
             }
 
 
 
-            if ((formData.name && formData.endDate && formData.couponType) &&
+            if ((formData.name && formData.minimumCartAmount > 0 && formData.endDate && formData.couponType) &&
                 ((formData.discountPercentage && formData.maximumPercentageDiscountAmount) || formData.discountAmount)) {
 
                 if (formData.discountAmount > 0 || (formData.maximumPercentageDiscountAmount > 0 && formData.discountPercentage > 0)) {
@@ -151,6 +159,7 @@ const CreateCoupon = () => {
                             discount_percentage: formData.discountPercentage,
                             discount_amount: formData.discountAmount,
                             maximum_percentage_discount_amount: formData.maximumPercentageDiscountAmount,
+                            minimum_cart_amount: formData.minimumCartAmount
 
                         })
                         .then((res) => {
@@ -161,7 +170,7 @@ const CreateCoupon = () => {
 
                             // eslint-disable-next-line
                             else if (res.status == "400") {
-                                console.log("BAD REQUEST")
+                                console.log("BAD REQUEST");
                             }
 
                         })
@@ -169,7 +178,7 @@ const CreateCoupon = () => {
                         .catch(err => {
                             if (err.response.data.name) {
                                 //console.log(err.response.data.password[0])
-                                setShowCouponAlreadyExistsError(err.response.data.name[0])
+                                setShowCouponAlreadyExistsError(err.response.data.name[0]);
                             }
                             else {
                                 //console.log(err.message);
@@ -193,7 +202,7 @@ const CreateCoupon = () => {
                             <Form.Group className="mt-3" controlId="name">
                                 <Form.Label>Coupon name</Form.Label>
                                 <Form.Control
-                                    placeholder="name"
+                                    placeholder="enter a coupon name"
                                     name="name"
                                     onChange={handleChange2}
                                 />
@@ -205,7 +214,24 @@ const CreateCoupon = () => {
                             </div>
 
 
-                            <Form.Group controlId="endDate">
+                            <Form.Group className="mt-3" controlId="minimumCartAmount">
+                                <Form.Label>Minimum Cart Amount</Form.Label>
+                                <Form.Control
+                                    type="number" name="minimumCartAmount"
+                                    onChange={handleChange2}
+                                />
+                            </Form.Group>
+
+                            {showNegativeZeroErrorMsg ?
+                                <div>
+                                    <span className="text-center form-validation-message mt-3">
+                                        Amount cannot be 0 or negative! </span>
+                                </div>
+
+                                : <div> </div>}
+
+
+                            <Form.Group className="mt-3" controlId="endDate">
                                 <Form.Label>Valid till</Form.Label>
                                 <Form.Control type="date" name="endDate" placeholder="end date" required
                                     min={minDate} onChange={handleChange2} />
@@ -261,7 +287,7 @@ const CreateCoupon = () => {
                                     <Form.Group className="mt-3" controlId="maximumPercentageDiscountAmount">
                                         <Form.Label>Maximum Discount Amount</Form.Label>
                                         <Form.Control
-                                            type="number" name="maximumPercentageDiscountAmount" min="1"
+                                            type="number" name="maximumPercentageDiscountAmount"
                                             onChange={handleChange}
                                         />
                                     </Form.Group>

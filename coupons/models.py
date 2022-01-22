@@ -22,6 +22,7 @@ class Coupon(models.Model):
     discount_amount = models.IntegerField(null=True, blank=True)
     maximum_percentage_discount_amount = models.IntegerField(
         null=True, blank=True)
+    minimum_cart_amount = models.IntegerField()
 
     def __str__(self):
         return self.name

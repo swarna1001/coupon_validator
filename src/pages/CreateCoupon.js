@@ -161,17 +161,16 @@ const CreateCoupon = () => {
                 ((formData.discountPercentage && formData.maximumPercentageDiscountAmount) || formData.discountAmount)) {
 
                 if (formData.discountAmount > 0 || (formData.maximumPercentageDiscountAmount > 0 && (formData.discountPercentage > 0 && formData.discountPercentage < 101))) {
+                    let postData = new FormData();
+                    postData.append("name", formData.name);
+                    postData.append("end_date", formData.endDate);
+                    postData.append("coupon_type", formData.couponType);
+                    postData.append("discount_percentage", formData.discountPercentage);
+                    postData.append("discount_amount", formData.discountAmount);
+                    postData.append("maximum_percentage_discount_amount", formData.maximumPercentageDiscountAmount);
+                    postData.append("minimum_cart_amount", formData.minimumCartAmount);
                     axiosInstance
-                        .post(`create-coupon/`, {
-                            name: formData.name,
-                            end_date: formData.endDate,
-                            coupon_type: formData.couponType,
-                            discount_percentage: formData.discountPercentage,
-                            discount_amount: formData.discountAmount,
-                            maximum_percentage_discount_amount: formData.maximumPercentageDiscountAmount,
-                            minimum_cart_amount: formData.minimumCartAmount
-
-                        })
+                        .post(`create-coupon/`, postData)
                         .then((res) => {
                             // eslint-disable-next-line
                             if (res.status == "201") {

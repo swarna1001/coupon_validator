@@ -16,6 +16,8 @@ const CreateCoupon = () => {
 
     const [formData, updateFormData] = useState(initialFormData);
     const [showPercentageErrorMsg, setShowPercentageErrorMsg] = useState(false);
+    const [showmaximumPercentageDiscountAmountErrorMsg, setShowmaximumPercentageDiscountAmountErrorMsg] = useState(false);
+
     const [showDiscountAmountErrorMsg, setShowDiscountAmountErrorMsg] = useState(false);
     const [showDiscountAmountBox, setShowDiscountAmountBox] = useState(false);
     const [showDiscountPercentageBox, setShowDiscountPercentageBox] = useState(false);
@@ -29,7 +31,8 @@ const CreateCoupon = () => {
         endDate: "",
         couponType: "",
         discountPercentage: "",
-        discountAmount: ""
+        discountAmount: "",
+        maximumPercentageDiscountAmount: ""
     });
 
 
@@ -50,10 +53,13 @@ const CreateCoupon = () => {
             setShowDiscountAmountBox(true)
             setShowDiscountPercentageBox(false)
             setShowPercentageErrorMsg(false);
+            setShowDiscountAmountErrorMsg(false);
+            setShowmaximumPercentageDiscountAmountErrorMsg(false);
 
             updateFormData({
                 ...formData,
                 discountPercentage: 0,
+                maximumPercentageDiscountAmount: 0,
                 couponType: 1,
             });
 
@@ -65,6 +71,7 @@ const CreateCoupon = () => {
             setShowDiscountAmountBox(false)
             setShowPercentageErrorMsg(false);
 
+
             updateFormData({
                 ...formData,
                 discountAmount: 0,
@@ -75,6 +82,10 @@ const CreateCoupon = () => {
 
     const handleChange2 = (e) => {
         setEmptyMessage(false);
+        setShowSuccessMessage(false);
+        setShowDiscountAmountErrorMsg(false);
+        setShowmaximumPercentageDiscountAmountErrorMsg(false);
+
         updateFormData({
             ...formData,
             [e.target.name]: e.target.value.trim(),
@@ -89,6 +100,8 @@ const CreateCoupon = () => {
         setShowDiscountAmountErrorMsg(false);
         setEmptyMessage(false);
         setShowCouponAlreadyExistsError("");
+        setShowSuccessMessage(false);
+        setShowmaximumPercentageDiscountAmountErrorMsg(false);
 
         if (typeof formData === 'undefined' || typeof formData.name === 'undefined'
             || typeof formData.endDate === 'undefined' || typeof formData.couponType === 'undefined') {
@@ -112,45 +125,58 @@ const CreateCoupon = () => {
                 setShowDiscountAmountErrorMsg(true)
             }
 
+            if (formData.maximumPercentageDiscountAmount <= 0 && formData.couponType == 2) {
+                setShowmaximumPercentageDiscountAmountErrorMsg(true)
+            }
+
             if (typeof formData.discountAmount === 'undefined') {
                 setEmptyMessage(true)
             }
 
-            if ((formData.name && formData.endDate && formData.couponType) && (
-                formData.discountPercentage || formData.discountAmount)) {
-                console.log("MAKE THE REQUEST!!!")
-                axiosInstance
-                    .post(`create-coupon/`, {
-                        name: formData.name,
-                        end_date: formData.endDate,
-                        coupon_type: formData.couponType,
-                        discount_percentage: formData.discountPercentage,
-                        discount_amount: formData.discountAmount,
+            if (typeof formData.maximumPercentageDiscountAmount === 'undefined') {
+                setEmptyMessage(true)
+            }
 
-                    })
-                    .then((res) => {
-                        // eslint-disable-next-line
-                        if (res.status == "201") {
-                            setShowSuccessMessage(true);
-                        }
 
-                        // eslint-disable-next-line
-                        else if (res.status == "400") {
-                            console.log("BAD REQUEST")
-                        }
 
-                    })
+            if ((formData.name && formData.endDate && formData.couponType) &&
+                ((formData.discountPercentage && formData.maximumPercentageDiscountAmount) || formData.discountAmount)) {
 
-                    .catch(err => {
-                        if (err.response.data.name) {
-                            //console.log(err.response.data.password[0])
-                            setShowCouponAlreadyExistsError(err.response.data.name[0])
-                        }
-                        else {
-                            //console.log(err.message);
-                            setError(err.message);
-                        }
-                    });
+                if (formData.discountAmount > 0 || (formData.maximumPercentageDiscountAmount > 0 && formData.discountPercentage > 0)) {
+                    axiosInstance
+                        .post(`create-coupon/`, {
+                            name: formData.name,
+                            end_date: formData.endDate,
+                            coupon_type: formData.couponType,
+                            discount_percentage: formData.discountPercentage,
+                            discount_amount: formData.discountAmount,
+                            maximum_percentage_discount_amount: formData.maximumPercentageDiscountAmount,
+
+                        })
+                        .then((res) => {
+                            // eslint-disable-next-line
+                            if (res.status == "201") {
+                                setShowSuccessMessage(true);
+                            }
+
+                            // eslint-disable-next-line
+                            else if (res.status == "400") {
+                                console.log("BAD REQUEST")
+                            }
+
+                        })
+
+                        .catch(err => {
+                            if (err.response.data.name) {
+                                //console.log(err.response.data.password[0])
+                                setShowCouponAlreadyExistsError(err.response.data.name[0])
+                            }
+                            else {
+                                //console.log(err.message);
+                                setError(err.message);
+                            }
+                        });
+                }
             }
 
         }
@@ -228,6 +254,31 @@ const CreateCoupon = () => {
 
                                 : <div> </div>}
 
+
+
+                            {showDiscountPercentageBox ?
+                                <div>
+                                    <Form.Group className="mt-3" controlId="maximumPercentageDiscountAmount">
+                                        <Form.Label>Maximum Discount Amount</Form.Label>
+                                        <Form.Control
+                                            type="number" name="maximumPercentageDiscountAmount" min="1"
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                </div>
+
+                                : <div> </div>}
+
+                            {showmaximumPercentageDiscountAmountErrorMsg ?
+                                <div>
+
+                                    <span className="text-center form-validation-message mt-3">
+                                        Discount Amount cannot be negative or zero!</span>
+                                </div>
+
+                                : <div> </div>}
+
+
                             {showDiscountAmountBox ?
 
                                 <div>
@@ -250,7 +301,6 @@ const CreateCoupon = () => {
                                 <div>
                                     <span className="text-center form-validation-message mt-3">
                                         Discount Amount cannot be negative or zero!</span>
-
                                 </div>
 
                                 : <div> </div>}
@@ -282,7 +332,6 @@ const CreateCoupon = () => {
                                         <h6><b> Something went wrong. Try Reloading! </b></h6>
                                     </div>
                                 </div>
-
                             }
 
                             <Button

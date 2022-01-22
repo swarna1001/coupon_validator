@@ -20,7 +20,8 @@ class Coupon(models.Model):
     )
     discount_percentage = models.IntegerField(null=True, blank=True)
     discount_amount = models.IntegerField(null=True, blank=True)
-
+    maximum_percentage_discount_amount = models.IntegerField(
+        null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -37,4 +38,5 @@ class Coupon(models.Model):
     def get_discount_amount(self):
         return self.discount_amount
 
-        
+    def get_maximum_discount_amount(self):
+        return self.maximum_percentage_discount_amount

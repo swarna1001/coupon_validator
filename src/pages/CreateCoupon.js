@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
 import axiosInstance from "../axios";
 
 const CreateCoupon = () => {
@@ -12,7 +13,6 @@ const CreateCoupon = () => {
     let tomorrow = new Date()
     tomorrow.setDate(today.getDate() + 1)
     const minDate = tomorrow.toISOString().split("T")[0]
-    //console.log(minDate)
 
     const [formData, updateFormData] = useState(initialFormData);
     const [showPercentageErrorMsg, setShowPercentageErrorMsg] = useState(false);
@@ -99,7 +99,7 @@ const CreateCoupon = () => {
         });
     }
 
-    console.log(formData);
+    //console.log(formData);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -137,6 +137,7 @@ const CreateCoupon = () => {
                 setShowDiscountAmountErrorMsg(true);
             }
 
+            // eslint-disable-next-line
             if (formData.maximumPercentageDiscountAmount <= 0 && formData.couponType == 2) {
                 setShowmaximumPercentageDiscountAmountErrorMsg(true);
             }
@@ -149,12 +150,12 @@ const CreateCoupon = () => {
                 setEmptyMessage(true);
             }
 
+            // eslint-disable-next-line
             if (formData.couponType == "") {
                 setCouponTypeNotSelectedErrorMsg(true);
             }
 
-
-
+            // eslint-disable-next-line
             if ((formData.name && formData.minimumCartAmount > 0 && formData.endDate) &&
                 (formData.couponType == 1 || formData.couponType == 2) &&
                 ((formData.discountPercentage && formData.maximumPercentageDiscountAmount) || formData.discountAmount)) {
@@ -205,7 +206,16 @@ const CreateCoupon = () => {
         <div>
             <Container>
                 <Row>
-                    <Col xs={12} sm={12} md={8} className="mt-4">
+                    <Col className="mt-4">
+                        <div className="mt-2 d-flex justify-content-end">
+                            <Nav.Item>
+                                <Nav.Link href="/" className="text-center">Validate Coupon</Nav.Link>
+                            </Nav.Item>
+
+                            <Nav.Item>
+                                <Nav.Link href="/all-coupons/" className="text-center">View Coupons</Nav.Link>
+                            </Nav.Item>
+                        </div>
 
                         <Form >
                             <Form.Group className="mt-3" controlId="name">
@@ -236,7 +246,7 @@ const CreateCoupon = () => {
                                     <span className="text-center form-validation-message">
                                         Amount cannot be 0 or negative! </span>
                                 </div>
-                                : <div> </div>}
+                                : <> </>}
 
 
                             <Form.Group className="mt-3" controlId="endDate">
@@ -271,7 +281,7 @@ const CreateCoupon = () => {
                                         Select a valid coupon type!</span>
 
                                 </div>
-                                : <div> </div>}
+                                : <> </>}
 
                             {showDiscountPercentageBox ?
                                 <div>
@@ -285,7 +295,7 @@ const CreateCoupon = () => {
                                     </Form.Group>
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
                             {showPercentageErrorMsg ?
                                 <div className="mt-3">
@@ -294,7 +304,7 @@ const CreateCoupon = () => {
 
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
 
 
@@ -309,7 +319,7 @@ const CreateCoupon = () => {
                                     </Form.Group>
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
                             {showmaximumPercentageDiscountAmountErrorMsg ?
                                 <div className="mt-3">
@@ -317,7 +327,7 @@ const CreateCoupon = () => {
                                         Discount Amount cannot be negative or zero!</span>
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
 
                             {showDiscountAmountBox ?
@@ -334,7 +344,7 @@ const CreateCoupon = () => {
 
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
 
                             {showDiscountAmountErrorMsg ?
@@ -343,7 +353,7 @@ const CreateCoupon = () => {
                                         Discount Amount cannot be negative or zero!</span>
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
 
                             {emptyMessage ?
@@ -353,33 +363,36 @@ const CreateCoupon = () => {
 
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
 
                             {showSuccessMessage ?
                                 <div className="mt-3">
-                                    <span className="text-center form-validation-message">
+                                    <span className="text-center form-success-message">
                                         New coupon successfully created!</span>
                                 </div>
 
-                                : <div> </div>}
+                                : <> </>}
 
 
                             {error &&
-                                <div className="d-flex justify-content-center mt-4">
+                                <div className="d-flex justify-content-center mt-4 form-validation-message">
                                     <div>
                                         <h6><b> Something went wrong. Please try again! </b></h6>
                                     </div>
                                 </div>
                             }
 
-                            <Button
-                                variant="success"
-                                className="mt-5 mb-2 mr-5"
-                                onClick={handleSubmit}
-                            >
-                                Post
-                            </Button>
+                            <div className="d-flex justify-content-center">
+
+                                <Button
+                                    variant="success" size="lg"
+                                    className="mt-5"
+                                    onClick={handleSubmit}
+                                >
+                                    Create
+                                </Button>
+                            </div>
                         </Form>
 
                     </Col>

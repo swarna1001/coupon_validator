@@ -41,3 +41,6 @@ class Coupon(models.Model):
 
     def get_maximum_discount_amount(self):
         return self.maximum_percentage_discount_amount
+
+    def get_minimum_cart_amount(self):
+        return self.minimum_cart_amount

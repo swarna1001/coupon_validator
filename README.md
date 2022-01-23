@@ -19,3 +19,6 @@
 10. Make database migrations using `python manage.py makemigrations` and `python manage.py migrate`.
 11. Start the project using `python manage.py runserver`.
 12. The project will run at your localhost.
+
+The project is hosted at:
+https://thecouponvalidator.herokuapp.com/
